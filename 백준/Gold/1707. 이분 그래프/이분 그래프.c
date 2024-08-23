@@ -17,7 +17,6 @@ Graph *g;
 int check[20001];
 
 void init_Graph() {
-    g = malloc(sizeof(Graph));
     g->root = 1;
     for(int i=1; i<=V; i++) {
         g->rel[i] = NULL;
@@ -51,6 +50,7 @@ int main() {
     scanf("%d", &K);
     
     int v1, v2;
+    g = malloc(sizeof(Graph));
     while(K--) {
         scanf("%d %d", &V, &E);
         init_Graph();
