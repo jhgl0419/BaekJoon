@@ -2,7 +2,6 @@
 #include <vector>
 #include <cstring>
 #define MAX(a,b) (a > b ? a : b)
-// 트리 지름 == 정점 사이 거리 중 가장 긴 것
 
 using namespace std;
 
@@ -11,24 +10,7 @@ struct Item {
 	int V;
 };
 
-int memo[100][100'001];
-
-int get_max(vector<Item> items, int limit, int start, int N) {
-	if (start >= N)
-		return 0;
-    
-    if (memo[start][limit] != -1)
-		return memo[start][limit];
-	
-	if (limit < items[start].W) {
-		return memo[start][limit] = get_max(items, limit, start + 1, N);
-	}
-
-	int non_incl = get_max(items, limit, start + 1, N);
-	int incl = get_max(items, limit - items[start].W, start + 1, N) + items[start].V;
-	
-	return memo[start][limit] = MAX(non_incl, incl);
-}
+int memo[100'001];
 
 int main(int argc, char** argv)
 {
@@ -36,7 +18,7 @@ int main(int argc, char** argv)
 
 	int N, K;
 	scanf("%d %d", &N, &K);
-	memset(memo, -1, sizeof(memo));
+	memset(memo, 0, sizeof(memo));
 
 	vector<Item> items;
 	int w, v;
@@ -46,8 +28,14 @@ int main(int argc, char** argv)
 		new_one.W = w; new_one.V = v;
 		items.push_back(new_one);
 	}
+	
+	for (int i = 0; i < N; i++) {
+		w = items[i].W;
+		for (int limit = K; limit >= w; limit--) {
+			memo[limit] = MAX(memo[limit], memo[limit - w] + items[i].V);
+		}
+	}
 
-	printf("%d\n", get_max(items, K, 0, N));
-
+	printf("%d\n", memo[K]);
 	return 0;//정상종료시 반드시 0을 리턴해야합니다.
 }
