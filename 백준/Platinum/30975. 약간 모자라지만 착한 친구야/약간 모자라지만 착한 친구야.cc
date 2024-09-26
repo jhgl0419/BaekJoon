@@ -17,22 +17,19 @@ int dp[1 << (MAX_N + 1)][MAX_N + 2];
 
 int main() {
 	scanf("%d %d", &N, &M);
-	
+
 	for (int i = 1; i <= N; i++) {	// N번
 		scanf("%d", &P[i]);
 	}
 
-	int u, v, c;
-
 	fill(&cost[0][0], &cost[MAX_N + 1][MAX_N + 2], INF);
-	//printf("%d %d\n", cost[0][0], cost[MAX_N + 1][MAX_N + 1]);
-	for (int i = 0; i < M; i++) {	// M번  
+    int u, v, c;
+    for (int i = 0; i < M; i++) {	// M번  
 		scanf("%d %d %d", &u, &v, &c);
 		cost[u][v] = min(cost[u][v], c);
 	}
+    
 	fill(&dp[0][0], &dp[(1 << (MAX_N + 1)) - 1][MAX_N + 2], INF);
-	//printf("%d %d\n", dp[0][0], dp[(1 << (MAX_N + 1)) - 1][MAX_N + 1]);
-	
 	int init_status = 1 << N;	// N이 2일 때 100가 처음
 	int last_status = (1 << (N + 1)) - 1;	// N이 2일 때 111가 마지막
 
@@ -43,17 +40,7 @@ int main() {
 			dp[init_status | (1 << (i - 1))][i] = cost[N + 1][i];
 		}
 	}
-#ifdef DEBUG
-	puts("DEBUG:");
-	for (int i = init_status; i <= last_status; i++) {
-		printf("\t%d / ", i);
-		for (int j = 1; j <= N; j++) {
-			printf("%d ", (dp[i][j] == INF) ? -1 : dp[i][j]);
-		}
-		puts("");
-	}
-#endif
-
+    
 	for (int i = init_status; i <= last_status; i++) {
 		for (int j = 1; j <= N; j++) {	// N+1은 포함되면 안됨.
 			if (i & (1 << (j - 1))) {	// 상태에 포함된 경우만 마지막 방문 동네일 수 있음
@@ -66,17 +53,7 @@ int main() {
 			}
 		}
 	}
-#ifdef DEBUG
-	puts("DEBUG:");
-	for (int i = init_status; i <= last_status; i++) {
-		printf("\t%d / ", i);
-		for (int j = 1; j <= N; j++) {
-			printf("%d ", (dp[i][j] == INF) ? -1 : dp[i][j]);
-		}
-		puts("");
-	}
-#endif
-
+    
 	int answer = INF;
 	for (int i = 1; i <= N; i++) {
 		int cmpVal = dp[last_status][i] + cost[i][N + 1];
